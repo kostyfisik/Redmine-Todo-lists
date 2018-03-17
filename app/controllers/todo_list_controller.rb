@@ -31,6 +31,7 @@ class TodoListController < ApplicationController
     TodoItem.joins(:issue)
             .where('issues.status_id != ?', @settings[:completed_todo_status])
             .where('issues.is_private = false or issues.assigned_to_id = ? or issues.author_id = ?', User.current.id, User.current.id)
+            .where('?.allowed_to?(:view_issues, issues.project)',User.current)
             .where('todo_items.todo_list_id in (?)', todo_lists_ids)
             .includes(:issue)
             .order('todo_items.position')
